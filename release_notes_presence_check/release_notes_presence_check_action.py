@@ -70,7 +70,7 @@ class ReleaseNotesPresenceCheckAction:
 
         # check release notes presence in defined location
         pr_body = pr_data.get("body", "")
-        if not pr_body.strip():
+        if len(pr_body.strip()) == 0:
             logger.error("Error: Pull request description is empty.")
             self.handle_failure()
 
