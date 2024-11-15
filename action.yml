@@ -20,6 +20,9 @@ inputs:
   pr-number:
     description: 'The number of the PR to check for release notes.'
     required: true
+  github-repository:
+    description: 'The repository to check for release notes.'
+    required: true
   location:
     description: 'The location of the release notes in the PR. Supported value is "body"'
     required: false
@@ -77,6 +80,7 @@ runs:
       env:
         INPUT_GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
         INPUT_PR_NUMBER: ${{ inputs.pr-number }}
+        INPUT_GITHUB_REPOSITORY: ${{ inputs.github-repository }}
         INPUT_LOCATION: ${{ inputs.location }}
         INPUT_TITLE: ${{ inputs.title }}
         INPUT_SKIP_LABELS: ${{ inputs.skip-labels }}

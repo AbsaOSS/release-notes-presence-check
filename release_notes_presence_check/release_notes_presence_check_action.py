@@ -21,6 +21,9 @@ This module contains the Release Notes Presence Check action.
 import logging
 import os
 import sys
+import re
+
+from release_notes_presence_check.github_repository import GitHubRepository
 
 logger = logging.getLogger(__name__)
 
@@ -36,14 +39,16 @@ class ReleaseNotesPresenceCheckAction:
 
         @return: None
         """
-        self.github_token = os.environ.get("INPUT_GITHUB_TOKEN", default="")
-        self.pr_number = os.environ.get("INPUT_PR_NUMBER", default="")
-        self.location = os.environ.get("INPUT_LOCATION", default="body")
-        self.title = os.environ.get("INPUT_TITLE", default="[Rr]elease [Nn]otes:")
-        self.skip_labels = os.environ.get("INPUT_SKIP_LABELS", default="")
-        self.fails_on_error = os.environ.get("INPUT_FAILS_ON_ERROR", "true").lower() == "true"
+        self.github_token: str = os.environ.get("INPUT_GITHUB_TOKEN", default="")
+        self.location: str = os.environ.get("INPUT_LOCATION", default="body")
+        self.title: str = os.environ.get("INPUT_TITLE", default="[Rr]elease [Nn]otes:")
+        self.skip_labels: list[str] = os.environ.get("INPUT_SKIP_LABELS", default="")
+        self.fails_on_error: bool = os.environ.get("INPUT_FAILS_ON_ERROR", "true").lower() == "true"
 
         self.__validate_inputs()
+
+        self.pr_number: int = int(os.environ.get("INPUT_PR_NUMBER", default=""))
+        self.owner, self.repo_name = os.environ.get("INPUT_GITHUB_REPOSITORY", default="").split("/")
 
     def run(self) -> None:
         """
@@ -53,26 +58,46 @@ class ReleaseNotesPresenceCheckAction:
         """
 
         # get PR information
-
+        repository = GitHubRepository(self.owner, self.repo_name, self.github_token)
+        pr_data = repository.get_pr_info(self.pr_number)
 
         # check skip labels presence
-
+        labels = [label.get("name", "") for label in pr_data.get("labels", [])]
+        if self.skip_labels in labels:
+            logger.info("Skipping release notes check because '%s' label is present.", self.skip_labels)
+            self.write_output("true")
+            sys.exit(0)  # Exiting with code 0 indicates success but the action is skipped.
 
         # check release notes presence in defined location
-
-
-
-
-
-        validator = NewVersionValidator(new_version, existing_versions)
-
-        if validator.is_valid_increment():
-            self.write_output("true")
-            logger.info("Release Notes detected.")
-            sys.exit(0)
-        else:
-            logger.error("Release notes not detected.")
+        pr_body = pr_data.get("body", "")
+        if not pr_body.strip():
+            logger.error("Error: Pull request description is empty.")
             self.handle_failure()
+
+        # Check if release notes tag is present
+        if not re.search(self.title, pr_body):
+            logger.error("Error: Release notes title '%s' not found in pull request body.", self.title)
+            self.handle_failure()
+
+        lines = pr_body.split("\n")
+        release_notes_start_index = None
+        for i, line in enumerate(lines):
+            if re.search(self.title, line):
+                release_notes_start_index = i + 1  # text after the tag line
+                break
+
+        if release_notes_start_index is None or release_notes_start_index >= len(lines):
+            logger.error("Error: No content found after the release notes tag.")
+            self.handle_failure()
+
+        text_below_release_notes = lines[release_notes_start_index:]
+        if not text_below_release_notes or not text_below_release_notes[0].strip().startswith(("-", "+", "*")):
+            logger.error("Error: No bullet list found directly under release notes tag.")
+            self.handle_failure()
+
+        self.write_output("true")
+        logger.info("Release Notes detected.")
+        sys.exit(0)
 
     def write_output(self, valid_value) -> None:
         """
@@ -106,24 +131,38 @@ class ReleaseNotesPresenceCheckAction:
         """
         if len(self.github_token) == 0:
             logger.error("Failure: GITHUB_TOKEN is not set correctly.")
-            sys.exit(1)
+            self.handle_failure()
 
-        if len(self.pr_number) == 0:
+        value = os.environ.get("INPUT_PR_NUMBER", default="")
+        if len(value) == 0:
             logger.error("Failure: PR_NUMBER is not set correctly.")
-            sys.exit(1)
+            self.handle_failure()
 
-        if not self.pr_number.isdigit():
+        if not value.isdigit():
             logger.error("Failure: PR_NUMBER is not a valid number.")
-            sys.exit(1)
+            self.handle_failure()
+
+        value = os.environ.get("INPUT_GITHUB_REPOSITORY", default="")
+        if len(value) == 0:
+            logger.error("Failure: GITHUB_REPOSITORY is not set correctly.")
+            self.handle_failure()
+
+        if value.count("/") != 1:
+            logger.error("Failure: GITHUB_REPOSITORY is not in the correct format.")
+            self.handle_failure()
+
+        if len(value.split("/")[0]) == 0 or len(value.split("/")[1]) == 0:
+            logger.error("Failure: GITHUB_REPOSITORY is not in the correct format.")
+            self.handle_failure()
 
         if len(self.location) == 0:
             logger.error("Failure: LOCATION is not set correctly.")
-            sys.exit(1)
+            self.handle_failure()
 
         if self.location not in ["body"]:
             logger.error("Failure: LOCATION is not one of the supported values.")
-            sys.exit(1)
+            self.handle_failure()
 
         if len(self.title) == 0:
             logger.error("Failure: TITLE is not set correctly.")
-            sys.exit(1)
+            self.handle_failure()
