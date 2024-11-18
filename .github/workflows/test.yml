@@ -106,8 +106,8 @@ jobs:
       - name: Set PYTHONPATH environment variable
         run: echo "PYTHONPATH=${GITHUB_WORKSPACE}/version_tag_check/version_tag_check" >> $GITHUB_ENV
 
-      - name: Build and run unit tests
-        run: pytest --cov=. --cov-report=html tests/ -vv
+      - name: Check code coverage with Pytest
+        run: pytest --cov=. -v tests/ --cov-fail-under=80
 
       - name: Check overall coverage
         run: |

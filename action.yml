@@ -24,7 +24,7 @@ inputs:
     description: 'The repository to check for release notes.'
     required: true
   location:
-    description: 'The location of the release notes in the PR. Supported value is "body"'
+    description: 'The location of the release notes in the PR. Default value is "body"'
     required: false
     default: 'body'
   title:

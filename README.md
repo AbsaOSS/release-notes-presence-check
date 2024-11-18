@@ -1,5 +1,19 @@
 # Release Notes Presence Checker
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [Usage](#usage)
+- [Running Static Code Analysis](#running-static-code-analysis)
+- [Run Black Tool Locally](#run-black-tool-locally)
+- [Running Unit Test](#running-unit-test)
+- [Code Coverage](#code-coverage)
+- [Run Action Locally](#run-action-locally)
+- [Contribution Guidelines](#contribution-guidelines)
+- [License Information](#license-information)
+- [Contact or Support Information](#contact-or-support-information)
+
 A GH action for validating the presence of release notes in pull requests.
 
 ## Motivation
@@ -29,7 +43,8 @@ This action is designed to help maintainers and contributors ensure that release
 - **Required**: Yes
 
 ### `location`
-- **Description**: The location of the release notes in the pull request. Example: `body`.
+- **Description**: The location of the release notes in the pull request.
+- **Default**: `body`
 - **Required**: No
 
 ### `title`
@@ -58,6 +73,10 @@ This action is designed to help maintainers and contributors ensure that release
 See the default action step definition:
 
 ```yaml
+- uses: actions/setup-python@v5.1.1
+  with:
+    python-version: '3.11'
+
 - name: Release Notes Presence Check
   id: release_notes_presence_check
   uses: AbsaOSS/release-notes-presence-check@v0.1.0
@@ -70,7 +89,7 @@ See the default action step definition:
     title: "[Rr]elease [Nn]otes:"
     skip-labels: "skip-release-notes,no-release-notes"
     fails-on-error: "false"
-  ```
+```
 
 ## Running Static Code Analysis
 
