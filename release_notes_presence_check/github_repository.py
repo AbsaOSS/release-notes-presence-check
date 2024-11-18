@@ -45,7 +45,7 @@ class GitHubRepository:
         self.token = token
         self.headers = {"Authorization": f"Bearer {self.token}", "Accept": "application/vnd.github.v3+json"}
 
-    def get_pr_info(self, pr_number) -> dict:
+    def get_pr_info(self, pr_number: int) -> dict:
         """
         Get Pull Request information for the repository.
 

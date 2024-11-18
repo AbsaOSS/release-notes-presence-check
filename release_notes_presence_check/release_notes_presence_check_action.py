@@ -58,11 +58,11 @@ class ReleaseNotesPresenceCheckAction:
         """
 
         # get PR information
-        repository = GitHubRepository(self.owner, self.repo_name, self.github_token)
-        pr_data = repository.get_pr_info(self.pr_number)
+        repository: GitHubRepository = GitHubRepository(self.owner, self.repo_name, self.github_token)
+        pr_data: dict = repository.get_pr_info(self.pr_number)
 
         # check skip labels presence
-        labels = [label.get("name", "") for label in pr_data.get("labels", [])]
+        labels: list[str] = [label.get("name", "") for label in pr_data.get("labels", [])]
         if self.skip_labels in labels:
             logger.info("Skipping release notes check because '%s' label is present.", self.skip_labels)
             self.write_output("true")
@@ -79,6 +79,7 @@ class ReleaseNotesPresenceCheckAction:
             logger.error("Error: Release notes title '%s' not found in pull request body.", self.title)
             self.handle_failure()
 
+        # Get line index of the release notes tag
         lines = pr_body.split("\n")
         release_notes_start_index = None
         for i, line in enumerate(lines):
@@ -86,10 +87,12 @@ class ReleaseNotesPresenceCheckAction:
                 release_notes_start_index = i + 1  # text after the tag line
                 break
 
+        # Check if there is content after the release notes tag
         if release_notes_start_index is None or release_notes_start_index >= len(lines):
             logger.error("Error: No content found after the release notes tag.")
             self.handle_failure()
 
+        # Check if there is a bullet list directly under the release notes tag
         text_below_release_notes = lines[release_notes_start_index:]
         if not text_below_release_notes or not text_below_release_notes[0].strip().startswith(("-", "+", "*")):
             logger.error("Error: No bullet list found directly under release notes tag.")
@@ -99,7 +102,7 @@ class ReleaseNotesPresenceCheckAction:
         logger.info("Release Notes detected.")
         sys.exit(0)
 
-    def write_output(self, valid_value) -> None:
+    def write_output(self, valid_value: str) -> None:
         """
         Write the output to the file specified by the GITHUB_OUTPUT environment variable.
 
@@ -107,9 +110,8 @@ class ReleaseNotesPresenceCheckAction:
         @return: None
         """
         output_file = os.environ.get("GITHUB_OUTPUT", default="output.txt")
-        if output_file:
-            with open(output_file, "a", encoding="utf-8") as fh:
-                print(f"valid={valid_value}", file=fh)
+        with open(output_file, "a", encoding="utf-8") as fh:
+            print(f"valid={valid_value}", file=fh)
 
     def handle_failure(self) -> None:
         """

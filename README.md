@@ -49,10 +49,12 @@ This action is designed to help maintainers and contributors ensure that release
 
 ### `title`
 - **Description**: The title of the release notes in the pull request. Example without regex: `Release Notes:`, with regex: `[Rr]elease [Nn]otes:`.
+- **Default**: `[Rr]elease [Nn]otes:`
 - **Required**: No
 
 ### `skip-labels`
 - **Description**: The labels to skip the release notes check. Example: `skip-release-notes`.
+- **Default**: ``
 - **Required**: No
 
 ### `fails-on-error`
