@@ -102,24 +102,20 @@ Pylint displays a global evaluation score for the code, rated out of a maximum s
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
-# run your commands
-
-deactivate
 ```
 
 This command will also install a Pylint tool, since it is listed in the project requirements.
 
 ### Run Pylint
 Run Pylint on all files that are currently tracked by Git in the project.
-```
+```shell
 pylint $(git ls-files '*.py')
 ```
 
 To run Pylint on a specific file, follow the pattern `pylint <path_to_file>/<name_of_file>.py`.
 
 Example:
-```
+```shell
 pylint ./release_notes_presence_check/release_notes_presence_check_action.py
 ``` 
 
@@ -159,7 +155,7 @@ black ./release_notes_presence_check/release_notes_presence_check_action.py
 
 ### Expected Output
 This is the console expected output example after running the tool:
-```
+```shell
 All done! ✨ 🍰 ✨
 1 file reformatted.
 ```
@@ -168,7 +164,7 @@ All done! ✨ 🍰 ✨
 
 Unit tests are written using pytest. To run the tests, use the following command:
 
-```
+```shell
 pytest tests/
 ```
 
@@ -178,16 +174,16 @@ This will execute all tests located in the tests directory.
 
 Code coverage is collected using pytest-cov coverage tool. To run the tests and collect coverage information, use the following command:
 
-```
-pytest --cov=. --cov-report=html tests/
+```shell
+pytest --cov=. -v tests/ --cov-fail-under=80
 ```
 
 This will execute all tests located in the tests directory and generate a code coverage report.
 
 See the coverage report on the path:
 
-```
-htmlcov/index.html
+```shell
+open htmlcov/index.html
 ```
 
 ## Run Action Locally

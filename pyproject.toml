@@ -4,4 +4,4 @@ target-version = ['py311']
 force-exclude = '''test'''
 
 [tool.coverage.run]
-omit = ["tests/*", "main.py", "version_tag_check/github_repository.py"]
+omit = ["tests/*", "main.py", "release_notes_presence_check/github_repository.py"]
