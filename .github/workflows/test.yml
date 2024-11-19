@@ -108,9 +108,3 @@ jobs:
 
       - name: Check code coverage with Pytest
         run: pytest --cov=. -v tests/ --cov-fail-under=80
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: coverage_overall.xml
