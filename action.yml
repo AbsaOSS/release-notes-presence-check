@@ -1,0 +1,91 @@
+#
+# Copyright 2024 ABSA Group Limited
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: 'Release Notes Presence Check'
+description: 'A GH action for checking the presence of release notes in a GitHub Pull Request.'
+inputs:
+  pr-number:
+    description: 'The number of the PR to check for release notes.'
+    required: true
+  github-repository:
+    description: 'The repository to check for release notes.'
+    required: true
+  location:
+    description: 'The location of the release notes in the PR. Default value is "body"'
+    required: false
+    default: 'body'
+  title:
+    description: 'The title of the release notes section in the PR body. Value supports regex.'
+    required: false
+    default: '[Rr]elease [Nn]otes:'
+  skip-labels:
+    description: 'A comma-separated list of labels that will cause the action to skip the check.'
+    required: false
+    default: ''
+  fails-on-error:
+    description: 'Set to "true" to fail the action if validation errors are found.'
+    required: false
+    default: 'true'
+
+outputs:
+  valid:
+    description: 'Indicates whether the release notes are present in the PR.'
+    value: ${{ steps.release-notes-presence-check.outputs.valid }}
+
+branding:
+  icon: 'book'
+  color: 'yellow'
+
+runs:
+  using: 'composite'
+  steps:
+    # setup-python is not called as it is expected that it was done in the workflow that uses this action
+    - name: Install Python dependencies
+      run: |
+        python_version=$(python --version 2>&1 | grep -oP '\d+\.\d+\.\d+')
+        minimal_required_version="3.11.0"
+        
+        function version { echo "$@" | awk -F. '{ printf("%d%03d%03d\n", $1,$2,$3); }'; }
+        
+        echo "Current Python version: $python_version"
+        echo "Minimal required Python version: $minimal_required_version"
+        
+        if [ $(version $python_version) -lt $(version $minimal_required_version) ]; then
+          echo "Python version is less than $minimal_required_version"
+          exit 1
+        else
+          echo "Python version meets the minimum requirement of $minimal_required_version"
+        fi
+        
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install -r ${{ github.action_path }}/requirements.txt
+      shell: bash
+
+    - name: Call version tag check logic
+      id: version-tag-check
+      env:
+        INPUT_GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        INPUT_PR_NUMBER: ${{ inputs.pr-number }}
+        INPUT_GITHUB_REPOSITORY: ${{ inputs.github-repository }}
+        INPUT_LOCATION: ${{ inputs.location }}
+        INPUT_TITLE: ${{ inputs.title }}
+        INPUT_SKIP_LABELS: ${{ inputs.skip-labels }}
+        INPUT_FAILS_ON_ERROR: ${{ inputs.fails-on-error }}
+      run: |
+        source .venv/bin/activate
+        python ${{ github.action_path }}/main.py
+      shell: bash
