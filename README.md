@@ -44,18 +44,18 @@ This action is designed to help maintainers and contributors ensure that release
 
 ### `location`
 - **Description**: The location of the release notes in the pull request.
-- **Default**: `body`
 - **Required**: No
+- **Default**: `body`
 
 ### `title`
 - **Description**: The title of the release notes in the pull request. Example without regex: `Release Notes:`, with regex: `[Rr]elease [Nn]otes:`.
-- **Default**: `[Rr]elease [Nn]otes:`
 - **Required**: No
+- **Default**: `[Rr]elease [Nn]otes:`
 
 ### `skip-labels`
 - **Description**: The labels to skip the release notes check. Example: `skip-release-notes`.
-- **Default**: ``
 - **Required**: No
+- **Default**: ``
 
 ### `fails-on-error`
 - **Description**: Whether the action should fail if an error occurs.
