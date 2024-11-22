@@ -78,7 +78,6 @@ def test_validate_inputs_invalid(monkeypatch, caplog, env_name, env_value, error
         "INPUT_LOCATION": "body",
         "INPUT_TITLE": "[Rr]elease [Nn]otes:",
         "INPUT_SKIP_LABELS": "",
-        "INPUT_FAILS_ON_ERROR": "true",
     }
 
     # Update or remove the environment variable for the tested scenario
@@ -136,14 +135,10 @@ def test_run_successful(mocker):
         "labels": [{"name": "bug"}, {"name": "enhancement"}]
     }
 
-    # Mock the output writing method
-    mock_output = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.ReleaseNotesPresenceCheckAction.write_output")
-
     # Run the action
     action = ReleaseNotesPresenceCheckAction()
     action.run()
 
-    mock_output.assert_called_once_with("true")
     mock_exit.assert_called_once_with(0)
 
 
@@ -174,9 +169,6 @@ def test_run_skip_by_label(mocker):
         "labels": [{"name": "bug"}, {"name": "enhancement"}, {"name": "skip-release-notes-check"}]
     }
 
-    # Mock the output writing method
-    mock_output = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.ReleaseNotesPresenceCheckAction.write_output")
-
     # Run the action
     with pytest.raises(SystemExit) as exit_info:
         action = ReleaseNotesPresenceCheckAction()
@@ -184,8 +176,6 @@ def test_run_skip_by_label(mocker):
 
     assert SystemExit == exit_info.type
     assert 0 == exit_info.value.code
-
-    mock_output.assert_called_once_with("true")
 
 
 def test_run_fail_no_body(mocker):
@@ -214,9 +204,6 @@ def test_run_fail_no_body(mocker):
         "labels": [{"name": "bug"}, {"name": "enhancement"}]
     }
 
-    # Mock the output writing method
-    mock_output = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.ReleaseNotesPresenceCheckAction.write_output")
-
     # Run the action
     with pytest.raises(SystemExit) as exit_info:
         action = ReleaseNotesPresenceCheckAction()
@@ -224,8 +211,6 @@ def test_run_fail_no_body(mocker):
 
     assert SystemExit == exit_info.type
     assert 1 == exit_info.value.code
-
-    mock_output.assert_called_once_with("false")
 
 def test_run_fail_empty_body(mocker):
     # Set environment variables
@@ -254,9 +239,6 @@ def test_run_fail_empty_body(mocker):
         "labels": [{"name": "bug"}, {"name": "enhancement"}]
     }
 
-    # Mock the output writing method
-    mock_output = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.ReleaseNotesPresenceCheckAction.write_output")
-
     # Run the action
     with pytest.raises(SystemExit) as exit_info:
         action = ReleaseNotesPresenceCheckAction()
@@ -264,8 +246,6 @@ def test_run_fail_empty_body(mocker):
 
     assert SystemExit == exit_info.type
     assert 1 == exit_info.value.code
-
-    mock_output.assert_called_once_with("false")
 
 def test_run_fail_title_not_found(mocker):
     # Set environment variables
@@ -294,9 +274,6 @@ def test_run_fail_title_not_found(mocker):
         "labels": [{"name": "bug"}, {"name": "enhancement"}]
     }
 
-    # Mock the output writing method
-    mock_output = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.ReleaseNotesPresenceCheckAction.write_output")
-
     # Run the action
     with pytest.raises(SystemExit) as exit_info:
         action = ReleaseNotesPresenceCheckAction()
@@ -304,8 +281,6 @@ def test_run_fail_title_not_found(mocker):
 
     assert SystemExit == exit_info.type
     assert 1 == exit_info.value.code
-
-    mock_output.assert_called_once_with("false")
 
 def test_run_fail_release_notes_lines_not_found(mocker):
     # Set environment variables
@@ -334,9 +309,6 @@ def test_run_fail_release_notes_lines_not_found(mocker):
         "labels": [{"name": "bug"}, {"name": "enhancement"}]
     }
 
-    # Mock the output writing method
-    mock_output = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.ReleaseNotesPresenceCheckAction.write_output")
-
     # Run the action
     with pytest.raises(SystemExit) as exit_info:
         action = ReleaseNotesPresenceCheckAction()
@@ -344,8 +316,6 @@ def test_run_fail_release_notes_lines_not_found(mocker):
 
     assert SystemExit == exit_info.type
     assert 1 == exit_info.value.code
-
-    mock_output.assert_called_once_with("false")
 
 def test_run_fail_no_lines_after_title(mocker):
     # Set environment variables
@@ -374,9 +344,6 @@ def test_run_fail_no_lines_after_title(mocker):
         "labels": [{"name": "bug"}, {"name": "enhancement"}]
     }
 
-    # Mock the output writing method
-    mock_output = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.ReleaseNotesPresenceCheckAction.write_output")
-
     # Run the action
     with pytest.raises(SystemExit) as exit_info:
         action = ReleaseNotesPresenceCheckAction()
@@ -384,35 +351,3 @@ def test_run_fail_no_lines_after_title(mocker):
 
     assert SystemExit == exit_info.type
     assert 1 == exit_info.value.code
-
-    mock_output.assert_called_once_with("false")
-
-# handle_failure
-
-def test_handle_failure_fails_on_error_false(mocker):
-    # Set environment variables with 'INPUT_FAILS_ON_ERROR' set to 'false'
-    env_vars = {
-        "INPUT_GITHUB_TOKEN": "fake_token",
-        "INPUT_PR_NUMBER": "109",
-        "INPUT_GITHUB_REPOSITORY": "owner/repo",
-        "INPUT_LOCATION": "body",
-        "INPUT_TITLE": "[Rr]elease [Nn]otes:",
-        "INPUT_SKIP_LABELS": "",
-        "INPUT_FAILS_ON_ERROR": "false",  # Set to 'false' to test else branch
-    }
-    mocker.patch.dict(os.environ, env_vars)
-
-    # Mock sys.exit to raise SystemExit exception
-    def mock_exit(code):
-        raise SystemExit(code)
-    mocker.patch("sys.exit", mock_exit)
-
-    # Instantiate the action
-    action = ReleaseNotesPresenceCheckAction()
-
-    # Call handle_failure and expect SystemExit
-    with pytest.raises(SystemExit) as e:
-        action.handle_failure()
-
-    # Assert that sys.exit was called with exit code 0
-    assert e.value.code == 0
