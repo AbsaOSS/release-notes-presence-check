@@ -57,17 +57,6 @@ This action is designed to help maintainers and contributors ensure that release
 - **Required**: No
 - **Default**: ``
 
-### `fails-on-error`
-- **Description**: Whether the action should fail if an error occurs.
-- **Required**: No
-- **Default**: `true`
-
-## Outputs
-
-### `valid`
-- **Description**: Whether the release notes are present.
-- **Value**: `true` or `false`
-
 ## Usage
 
 ### Adding the Action to Your Workflow
@@ -90,7 +79,6 @@ See the default action step definition:
     location: "body"
     title: "[Rr]elease [Nn]otes:"
     skip-labels: "skip-release-notes,no-release-notes"
-    fails-on-error: "false"
 ```
 
 ## Running Static Code Analysis
@@ -218,20 +206,9 @@ export INPUT_GITHUB_REPOSITORY="AbsaOSS/generate-release-notes"
 export INPUT_LOCATION="body"
 export INPUT_TITLE="[Rr]elease notes:"
 export INPUT_SKIP_LABELS="skip-release-notes,another-skip-label"
-export INPUT_FAILS_ON_ERROR="true"
-export GITHUB_OUTPUT="output.txt"   # File to capture outputs
-
-# Remove existing output file if it exists
-if [ -f "$GITHUB_OUTPUT" ]; then
-  rm "$GITHUB_OUTPUT"
-fi
 
 # Run the main script
 python main.py
-
-# Display the outputs
-echo "Action Outputs:"
-cat "$GITHUB_OUTPUT"
 ```
 
 ## Contribution Guidelines
