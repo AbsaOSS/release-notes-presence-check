@@ -129,7 +129,7 @@ class ReleaseNotesPresenceCheckAction:
             logger.error("Failure: GITHUB_REPOSITORY is not in the correct format.")
             error_detected = True
         else:
-            if  len(value.split("/")[0]) == 0 or len(value.split("/")[1]) == 0:
+            if len(value.split("/")[0]) == 0 or len(value.split("/")[1]) == 0:
                 logger.error("Failure: GITHUB_REPOSITORY is not in the correct format.")
                 error_detected = True
 
