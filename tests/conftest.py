@@ -24,6 +24,7 @@ def mock_logging_setup(mocker):
 
 @pytest.fixture()
 def mock_exit(code) -> list:
+    """Fixture to mock the exit function using pytest-mock."""
     exit_calls = []
     exit_calls.append(code)
     return exit_calls
