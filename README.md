@@ -75,7 +75,7 @@ See the default action step definition:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
   with:
     github-repository: "{ org }/{ repo }"         # e.g. ${{ github.repository }}
-    pr-number: 109                                # e.h. ${{ github.event.number }} 
+    pr-number: 109                                # e.g. ${{ github.event.number }} 
     location: "body"
     title: "[Rr]elease [Nn]otes:"
     skip-labels: "skip-release-notes,no-release-notes"
