@@ -35,15 +35,6 @@ inputs:
     description: 'A comma-separated list of labels that will cause the action to skip the check.'
     required: false
     default: ''
-  fails-on-error:
-    description: 'Set to "true" to fail the action if validation errors are found.'
-    required: false
-    default: 'true'
-
-outputs:
-  valid:
-    description: 'Indicates whether the release notes are present in the PR.'
-    value: ${{ steps.release-notes-presence-check.outputs.valid }}
 
 branding:
   icon: 'book'
@@ -84,7 +75,6 @@ runs:
         INPUT_LOCATION: ${{ inputs.location }}
         INPUT_TITLE: ${{ inputs.title }}
         INPUT_SKIP_LABELS: ${{ inputs.skip-labels }}
-        INPUT_FAILS_ON_ERROR: ${{ inputs.fails-on-error }}
       run: |
         source .venv/bin/activate
         python ${{ github.action_path }}/main.py
