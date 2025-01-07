@@ -70,12 +70,12 @@ class ReleaseNotesPresenceCheckAction:
         pr_body = pr_data.get("body", "")
         if len(pr_body.strip()) == 0:
             logger.error("Error: Pull request description is empty.")
-            sys.exit(0)
+            sys.exit(1)
 
         # Check if release notes tag is present
         if not re.search(self.title, pr_body):
             logger.error("Error: Release notes title '%s' not found in pull request body.", self.title)
-            sys.exit(0)
+            sys.exit(1)
 
         # Get line index of the release notes tag
         lines = pr_body.split("\n")
