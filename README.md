@@ -1,9 +1,9 @@
 # Release Notes Presence Checker
 
 - [Motivation](#motivation)
+- [Impact to Users](#impact-to-users)
 - [Requirements](#requirements)
 - [Inputs](#inputs)
-- [Outputs](#outputs)
 - [Usage](#usage)
 - [Running Static Code Analysis](#running-static-code-analysis)
 - [Run Black Tool Locally](#run-black-tool-locally)
@@ -23,6 +23,16 @@ This action is designed to help maintainers and contributors ensure that release
 - Incomplete release notes
 - Incorrect release note formats
 - Release notes in the wrong location
+
+## Impact to Users
+The users are expected to provide the release notes in the pull request body. See example:
+```markdown
+Release Notes:                          .... also valid: ## Release Notes:
+- 1st line of PR's release notes
+- 2nd line of PR's release notes
+```
+
+This section can be placed anywhere in the pull request body. The action will search for the release notes based on the provided title text. _Hint:_ The title can be chapter name, the Markdown format tags are ignored.
 
 ## Requirements
 - **GitHub Token**: A GitHub token with permission to fetch repository data such as Issues and Pull Requests.
