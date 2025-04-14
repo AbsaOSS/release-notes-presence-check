@@ -64,9 +64,11 @@ class ReleaseNotesPresenceCheckAction:
 
         # check skip labels presence
         labels: list[str] = [label.get("name", "") for label in pr_data.get("labels", [])]
-        if self.skip_labels in labels:
-            logger.info("Skipping release notes check because '%s' label is present.", self.skip_labels)
-            sys.exit(0)  # Exiting with code 0 indicates success but the action is skipped.
+        logger.debug(f"PR number: {self.pr_number}, labels: {labels}")
+        for label in labels:
+            if self.skip_labels == label:
+                logger.info("Skipping release notes check because '%s' label is present.", label)
+                sys.exit(0)  # Exiting with code 0 indicates success but the action is skipped.
 
         # check release notes presence in defined location
         pr_body = pr_data.get("body", "")
