@@ -4,3 +4,6 @@ pytest-mock==3.14.0
 pylint==3.2.6
 requests==2.31.0
 black==24.8.0
+mypy==1.15.0
+mypy-extensions==1.0.0
+types-requests==2.32.0.20250328

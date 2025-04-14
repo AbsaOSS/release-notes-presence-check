@@ -7,6 +7,7 @@
 - [Usage](#usage)
 - [Running Static Code Analysis](#running-static-code-analysis)
 - [Run Black Tool Locally](#run-black-tool-locally)
+- [Run mypy Tool Locally](#run-mypy-tool-locally)
 - [Running Unit Test](#running-unit-test)
 - [Code Coverage](#code-coverage)
 - [Run Action Locally](#run-action-locally)
@@ -158,6 +159,39 @@ This is the console expected output example after running the tool:
 ```shell
 All done! ✨ 🍰 ✨
 1 file reformatted.
+```
+
+## Run mypy Tool Locally
+
+This project uses the [my[py]](https://mypy.readthedocs.io/en/stable/)
+tool which is a static type checker for Python.
+
+> Type checkers help ensure that you’re using variables and functions in your code correctly.
+> With mypy, add type hints (PEP 484) to your Python programs,
+> and mypy will warn you when you use those types incorrectly.
+my[py] configuration is in `pyptoject.toml` file.
+
+Follow these steps to format your code with my[py] locally:
+
+### Run my[py]
+
+Run my[py] on all files in the project.
+```shell
+  mypy .
+```
+
+To run my[py] check on a specific file, follow the pattern `mypy <path_to_file>/<name_of_file>.py --check-untyped-defs`.
+
+Example:
+```shell
+   mypy release_notes_presence_check/release_notes_presence_check.py
+``` 
+
+### Expected Output
+
+This is the console expected output example after running the tool:
+```
+Success: no issues found in 1 source file
 ```
 
 ## Running Unit Test
