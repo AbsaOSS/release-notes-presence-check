@@ -77,6 +77,8 @@ class ReleaseNotesPresenceCheckAction:
             logger.error(message)
             set_action_failed(message)
 
+        logger.debug(f"PR body: {pr_body}")
+
         # Check if release notes tag is present
         if not re.search(self.title, pr_body):
             message = f"Error: Release notes title '{self.title}' not found in pull request body."
