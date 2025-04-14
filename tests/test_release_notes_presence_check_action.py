@@ -137,9 +137,10 @@ def test_run_successful(mocker):
 
     # Run the action
     action = ReleaseNotesPresenceCheckAction()
-    action.run()
+    status, message = action.run()
 
-    mock_exit.assert_called_once_with(0)
+    assert True == status
+    assert "Release Notes detected." == message
 
 
 def test_run_skip_by_label(mocker):
@@ -170,12 +171,11 @@ def test_run_skip_by_label(mocker):
     }
 
     # Run the action
-    with pytest.raises(SystemExit) as exit_info:
-        action = ReleaseNotesPresenceCheckAction()
-        action.run()
+    action = ReleaseNotesPresenceCheckAction()
+    status, message = action.run()
 
-    assert SystemExit == exit_info.type
-    assert 0 == exit_info.value.code
+    assert True == status
+    assert "Skipping release notes check because 'skip-release-notes-check' label is present." == message
 
 
 def test_run_fail_no_body(mocker):
@@ -205,12 +205,12 @@ def test_run_fail_no_body(mocker):
     }
 
     # Run the action
-    with pytest.raises(SystemExit) as exit_info:
-        action = ReleaseNotesPresenceCheckAction()
-        action.run()
+    action = ReleaseNotesPresenceCheckAction()
+    status, message = action.run()
 
-    assert SystemExit == exit_info.type
-    assert 1 == exit_info.value.code
+    assert False == status
+    assert "Error: Pull request description is empty." == message
+
 
 def test_run_fail_empty_body(mocker):
     # Set environment variables
@@ -240,12 +240,12 @@ def test_run_fail_empty_body(mocker):
     }
 
     # Run the action
-    with pytest.raises(SystemExit) as exit_info:
-        action = ReleaseNotesPresenceCheckAction()
-        action.run()
+    action = ReleaseNotesPresenceCheckAction()
+    status, message = action.run()
 
-    assert SystemExit == exit_info.type
-    assert 1 == exit_info.value.code
+    assert False == status
+    assert "Error: Pull request description is empty." == message
+
 
 def test_run_fail_title_not_found(mocker):
     # Set environment variables
@@ -275,12 +275,12 @@ def test_run_fail_title_not_found(mocker):
     }
 
     # Run the action
-    with pytest.raises(SystemExit) as exit_info:
-        action = ReleaseNotesPresenceCheckAction()
-        action.run()
+    action = ReleaseNotesPresenceCheckAction()
+    status, message = action.run()
 
-    assert SystemExit == exit_info.type
-    assert 1 == exit_info.value.code
+    assert False == status
+    assert "Error: Release notes title 'Not present:' not found in pull request body." == message
+
 
 def test_run_fail_release_notes_lines_not_found(mocker):
     # Set environment variables
@@ -310,12 +310,12 @@ def test_run_fail_release_notes_lines_not_found(mocker):
     }
 
     # Run the action
-    with pytest.raises(SystemExit) as exit_info:
-        action = ReleaseNotesPresenceCheckAction()
-        action.run()
+    action = ReleaseNotesPresenceCheckAction()
+    status, message = action.run()
 
-    assert SystemExit == exit_info.type
-    assert 1 == exit_info.value.code
+    assert False == status
+    assert "Error: No bullet list found directly under release notes tag." == message
+
 
 def test_run_fail_no_lines_after_title(mocker):
     # Set environment variables
@@ -345,9 +345,8 @@ def test_run_fail_no_lines_after_title(mocker):
     }
 
     # Run the action
-    with pytest.raises(SystemExit) as exit_info:
-        action = ReleaseNotesPresenceCheckAction()
-        action.run()
+    action = ReleaseNotesPresenceCheckAction()
+    status, message = action.run()
 
-    assert SystemExit == exit_info.type
-    assert 1 == exit_info.value.code
+    assert False == status
+    assert "Error: No content found after the release notes tag." == message
