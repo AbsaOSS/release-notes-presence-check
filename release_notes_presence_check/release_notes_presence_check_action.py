@@ -151,5 +151,9 @@ class ReleaseNotesPresenceCheckAction:
             logger.error("Failure: TITLE is not set correctly.")
             error_detected = True
 
+        logger.debug(f"Input - `location`: {self.location}")
+        logger.debug(f"Input - `title`: {self.title}")
+        logger.debug(f"Input - `skip_labels`: {self.skip_labels}")
+
         if error_detected:
             sys.exit(1)
