@@ -24,10 +24,12 @@ import sys
 import re
 
 from release_notes_presence_check.github_repository import GitHubRepository
+from release_notes_presence_check.utils.gh_action import set_action_failed, get_action_input
 
 logger = logging.getLogger(__name__)
 
 
+# pylint: disable=too-few-public-methods
 class ReleaseNotesPresenceCheckAction:
     """
     Class to handle the Release Notes Presence Check action.
@@ -39,10 +41,10 @@ class ReleaseNotesPresenceCheckAction:
 
         @return: None
         """
-        self.github_token: str = os.environ.get("INPUT_GITHUB_TOKEN", default="")
-        self.location: str = os.environ.get("INPUT_LOCATION", default="body")
-        self.title: str = os.environ.get("INPUT_TITLE", default="[Rr]elease [Nn]otes:")
-        self.skip_labels: list[str] = os.environ.get("INPUT_SKIP_LABELS", default="")
+        self.github_token: str = get_action_input("GITHUB_TOKEN", "")
+        self.location: str = get_action_input("LOCATION", "body")
+        self.title: str = get_action_input("TITLE", "[Rr]elease [Nn]otes:")
+        self.skip_labels: list[str] = get_action_input("SKIP_LABELS", default="").split(",")
 
         self.__validate_inputs()
 
@@ -69,13 +71,15 @@ class ReleaseNotesPresenceCheckAction:
         # check release notes presence in defined location
         pr_body = pr_data.get("body", "")
         if len(pr_body.strip()) == 0:
-            logger.error("Error: Pull request description is empty.")
-            sys.exit(1)
+            message = "Error: Pull request description is empty."
+            logger.error(message)
+            set_action_failed(message)
 
         # Check if release notes tag is present
         if not re.search(self.title, pr_body):
-            logger.error("Error: Release notes title '%s' not found in pull request body.", self.title)
-            sys.exit(1)
+            message = f"Error: Release notes title '{self.title}' not found in pull request body."
+            logger.error(message)
+            set_action_failed(message)
 
         # Get line index of the release notes tag
         lines = pr_body.split("\n")
@@ -87,14 +91,16 @@ class ReleaseNotesPresenceCheckAction:
 
         # Check if there is content after the release notes tag
         if release_notes_start_index is None or release_notes_start_index >= len(lines):
-            logger.error("Error: No content found after the release notes tag.")
-            sys.exit(1)
+            message = "Error: No content found after the release notes tag."
+            logger.error(message)
+            set_action_failed(message)
 
         # Check if there is a bullet list directly under the release notes tag
         text_below_release_notes = lines[release_notes_start_index:]
         if not text_below_release_notes or not text_below_release_notes[0].strip().startswith(("-", "+", "*")):
-            logger.error("Error: No bullet list found directly under release notes tag.")
-            sys.exit(1)
+            message = "Error: No bullet list found directly under release notes tag."
+            logger.error(message)
+            set_action_failed(message)
 
         logger.info("Release Notes detected.")
         sys.exit(0)
