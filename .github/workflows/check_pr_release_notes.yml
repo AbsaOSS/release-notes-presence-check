@@ -31,7 +31,7 @@ jobs:
           python-version: '3.11'
 
       - name: Check presence of release notes in PR description
-        uses: AbsaOSS/release-notes-presence-check@feature/10-Markdown-expected-empty-line-not-supported
+        uses: AbsaOSS/release-notes-presence-check@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

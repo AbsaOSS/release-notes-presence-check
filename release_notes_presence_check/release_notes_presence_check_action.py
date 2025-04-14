@@ -87,7 +87,6 @@ class ReleaseNotesPresenceCheckAction:
 
         # remove empty lines from body
         pr_body_filtered = "\n".join(line for line in pr_body.split("\n") if line.strip())
-        logger.debug(f"PR body filtered: {pr_body_filtered}")
 
         # Get line index of the release notes tag
         lines = pr_body_filtered.split("\n")
