@@ -30,7 +30,7 @@ def get_action_input(name: str, default: Optional[str] = None) -> str:
     @param name: The name of the input parameter.
     @param default: The default value to return if the environment variable is not set.
 
-    @return: The value of the specified input parameter, or an empty string if the environment
+    @return: The value of the specified input parameter, or an empty string if the environment variable is not set.
     """
     return os.getenv(f'INPUT_{name.replace("-", "_").upper()}', default=default)
 
