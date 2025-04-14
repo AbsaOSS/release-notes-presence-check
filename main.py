@@ -19,8 +19,10 @@ This module contains the main script for the Version Tag Check GH Action.
 """
 
 import logging
+import sys
 
 from release_notes_presence_check.release_notes_presence_check_action import ReleaseNotesPresenceCheckAction
+from release_notes_presence_check.utils.gh_action import set_action_failed
 from release_notes_presence_check.utils.logging_config import setup_logging
 
 if __name__ == "__main__":
@@ -30,4 +32,11 @@ if __name__ == "__main__":
     logger.info("Starting Release Notes Presence Check.")
 
     action = ReleaseNotesPresenceCheckAction()
-    action.run()
+    status, message = action.run()
+
+    if status:
+        logger.info(message)
+        sys.exit(0)
+    else:
+        logger.error(message)
+        set_action_failed(message)
