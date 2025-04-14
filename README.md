@@ -161,14 +161,14 @@ All done! ✨ 🍰 ✨
 1 file reformatted.
 ```
 
-## Run mypy Tool Locally
+## Run my[py] Tool Locally
 
 This project uses the [my[py]](https://mypy.readthedocs.io/en/stable/)
 tool which is a static type checker for Python.
 
 > Type checkers help ensure that you’re using variables and functions in your code correctly.
-> With mypy, add type hints (PEP 484) to your Python programs,
-> and mypy will warn you when you use those types incorrectly.
+> With my[py], add type hints (PEP 484) to your Python programs,
+> and my[py] will warn you when you use those types incorrectly.
 my[py] configuration is in `pyproject.toml` file.
 
 Follow these steps to format your code with my[py] locally:
