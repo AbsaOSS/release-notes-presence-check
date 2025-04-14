@@ -54,7 +54,7 @@ class ReleaseNotesPresenceCheckAction:
         """
         Run the action.
 
-        @return: None
+        @return: tuple[bool, str] - A tuple containing the status and message.
         """
 
         # get PR information
