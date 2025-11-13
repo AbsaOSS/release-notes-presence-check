@@ -44,11 +44,8 @@ class ReleaseNotesPresenceCheckAction:
         self.location: str = get_action_input("LOCATION", "body")
         self.title: str = get_action_input("TITLE", "[Rr]elease [Nn]otes:")
         self.skip_labels: list[str] = get_action_input("SKIP_LABELS", default="").split(",")
-        self.skip_placeholders: set[str] = {
-            placeholder.strip()
-            for placeholder in get_action_input("SKIP_PLACEHOLDERS", default="").split(",")
-            if placeholder.strip()
-        }
+        raw_placeholder_input: str = get_action_input("SKIP_PLACEHOLDERS", default="")
+        self.skip_placeholders: set[str] = {p for p in (item.strip() for item in raw_placeholder_input.split(",")) if p}
 
         self.__validate_inputs()
 
