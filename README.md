@@ -68,6 +68,11 @@ This section can be placed anywhere in the pull request body. The action will se
 - **Required**: No
 - **Default**: ``
 
+### `skip-placeholders`
+- **Description**: Comma-separated placeholder tokens. If any token appears in the first release notes bullet, the check is skipped. Example: `TBD,ToDo`.
+- **Required**: No
+- **Default**: ``
+
 ## Usage
 
 ### Adding the Action to Your Workflow
@@ -90,6 +95,7 @@ See the default action step definition:
     location: "body"
     title: "[Rr]elease [Nn]otes:"
     skip-labels: "skip-release-notes,no-release-notes"
+    skip-placeholders: "TBD,ToDo"
 ```
 
 ## Running Static Code Analysis
@@ -250,6 +256,7 @@ export INPUT_GITHUB_REPOSITORY="AbsaOSS/generate-release-notes"
 export INPUT_LOCATION="body"
 export INPUT_TITLE="[Rr]elease notes:"
 export INPUT_SKIP_LABELS="skip-release-notes,another-skip-label"
+export INPUT_SKIP_PLACEHOLDERS="TBD,ToDo"
 
 # Run the main script
 python main.py

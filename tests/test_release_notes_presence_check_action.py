@@ -350,3 +350,32 @@ def test_run_fail_no_lines_after_title(mocker):
 
     assert False == status
     assert "Error: No content found after the release notes tag." == message
+
+
+def test_run_fail_placeholder(mocker):
+    env_vars = {
+        "INPUT_GITHUB_TOKEN": "fake_token",
+        "INPUT_PR_NUMBER": "109",
+        "INPUT_GITHUB_REPOSITORY": "owner/repo",
+        "INPUT_LOCATION": "body",
+        "INPUT_TITLE": "[Rr]elease [Nn]otes:",
+        "INPUT_SKIP_LABELS": "",
+        "INPUT_SKIP_PLACEHOLDERS": "TBD,ToDo, To_Do",
+        "INPUT_FAILS_ON_ERROR": "true",
+    }
+    os.environ.update(env_vars)
+    if os.path.exists("output.txt"):
+        os.remove("output.txt")
+
+    mocker.patch("sys.exit", side_effect=SystemExit(1))
+    mock_repository_class = mocker.patch("release_notes_presence_check.release_notes_presence_check_action.GitHubRepository")
+    mock_repository_instance = mock_repository_class.return_value
+    mock_repository_instance.get_pr_info.return_value = {
+        "body": "Release Notes:\n- To_Do: 1st item\n- TBD: 2nd item",
+        "labels": [{"name": "bug"}]
+    }
+
+    action = ReleaseNotesPresenceCheckAction()
+    status, message = action.run()
+    assert status is False
+    assert "Placeholder release notes found" in message

@@ -35,6 +35,10 @@ inputs:
     description: 'A comma-separated list of labels that will cause the action to skip the check.'
     required: false
     default: ''
+  skip-placeholders:
+    description: 'Comma-separated list of placeholder tokens (e.g. TBD, ToDo) that will be ignored when checking for release notes presence.'
+    required: false
+    default: ''
 
 branding:
   icon: 'book'
@@ -75,6 +79,7 @@ runs:
         INPUT_LOCATION: ${{ inputs.location }}
         INPUT_TITLE: ${{ inputs.title }}
         INPUT_SKIP_LABELS: ${{ inputs.skip-labels }}
+        INPUT_SKIP_PLACEHOLDERS: ${{ inputs.skip-placeholders }}
       run: |
         source .venv/bin/activate
         python ${{ github.action_path }}/main.py

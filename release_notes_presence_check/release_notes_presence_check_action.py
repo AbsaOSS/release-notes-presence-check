@@ -44,6 +44,8 @@ class ReleaseNotesPresenceCheckAction:
         self.location: str = get_action_input("LOCATION", "body")
         self.title: str = get_action_input("TITLE", "[Rr]elease [Nn]otes:")
         self.skip_labels: list[str] = get_action_input("SKIP_LABELS", default="").split(",")
+        raw_placeholder_input: str = get_action_input("SKIP_PLACEHOLDERS", default="")
+        self.skip_placeholders: set[str] = {p for p in (item.strip() for item in raw_placeholder_input.split(",")) if p}
 
         self.__validate_inputs()
 
@@ -63,7 +65,7 @@ class ReleaseNotesPresenceCheckAction:
 
         # check skip labels presence
         labels: list[str] = [label.get("name", "") for label in pr_data.get("labels", [])]
-        logger.debug(f"PR number: {self.pr_number}, labels: {labels}")
+        logger.debug("PR number: %s, labels: %s", self.pr_number, labels)
         for label in labels:
             if label in self.skip_labels:
                 return True, f"Skipping release notes check because '{label}' label is present."
@@ -73,7 +75,7 @@ class ReleaseNotesPresenceCheckAction:
         if len(pr_body.strip()) == 0:
             return False, "Error: Pull request description is empty."
 
-        logger.debug(f"PR body: {pr_body}")
+        logger.debug("PR body: %s", pr_body)
 
         # Check if release notes tag is present
         if not re.search(self.title, pr_body):
@@ -98,6 +100,11 @@ class ReleaseNotesPresenceCheckAction:
         text_below_release_notes = lines[release_notes_start_index:]
         if not text_below_release_notes or not text_below_release_notes[0].strip().startswith(("-", "+", "*")):
             return False, "Error: No bullet list found directly under release notes tag."
+
+        # Check for placeholder values in the first bullet point (single regex pass)
+        bullet_match = re.match(r"^\s*[-+*]\s*([A-Za-z0-9_]+)", text_below_release_notes[0])
+        if bullet_match and bullet_match.group(1) in self.skip_placeholders:
+            return False, "Error: Placeholder release notes found. Replace template values."
 
         return True, "Release Notes detected."
 
@@ -147,9 +154,10 @@ class ReleaseNotesPresenceCheckAction:
             logger.error("Failure: TITLE is not set correctly.")
             error_detected = True
 
-        logger.debug(f"Input - `location`: {self.location}")
-        logger.debug(f"Input - `title`: {self.title}")
-        logger.debug(f"Input - `skip_labels`: {self.skip_labels}")
+        logger.debug("Input - `location`: %s", self.location)
+        logger.debug("Input - `title`: %s", self.title)
+        logger.debug("Input - `skip_labels`: %s", self.skip_labels)
+        logger.debug("Input - `skip_placeholders`: %s", self.skip_placeholders)
 
         if error_detected:
             set_action_failed("Inputs validation failed.")
