@@ -1,38 +1,26 @@
 ---
-name: Spike
-about: Issue template for spikes, research and investigation tasks
-labels: 'spike'
-type: 'Task'
+name: Feature request
+about: Suggest an idea for the project
+labels: 'enhancement'
+type: 'Feature'
 ---
 
 [//]: # (Template version v1.0.0)
 
 ## Background
-A clear and concise description of the problem or a topic we need to understand.
+A clear and concise description of where the limitation lies.
 
-Feel free to add information about why it's needed and what assumptions you have at the moment.
-
-## Questions To Answer
-
-1.
-2.
-3.
+## Feature
+A description of the requested feature.
 
 ## Business Value
-The business value of the requested investigation.
+The business value of the requested feature.
 
-## Desired Outcome
-The list of desired outcomes of this spike ticket.
+## Example [Optional]
+A simple example if applicable.
 
-### Tasks
-- [ ] Questions have been answered or we have a clearer idea of how to get to our goal
-- [ ] Discussion with the team
-- [ ] Documentation
-- [ ] Create recommendations and new implementation tickets
-- [ ] item here..
-
-## Additional Info/Resources [Optional]
-
+## Proposed Solution [Optional]
+Solution Ideas:
 1.
 2.
 3.
