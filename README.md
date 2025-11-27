@@ -86,12 +86,12 @@ See the default action step definition:
 
 - name: Release Notes Presence Check
   id: release_notes_presence_check
-  uses: AbsaOSS/release-notes-presence-check@v0.1.0
+  uses: AbsaOSS/release-notes-presence-check@v0.4.0
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
   with:
-    github-repository: "{ org }/{ repo }"         # e.g. ${{ github.repository }}
-    pr-number: 109                                # e.g. ${{ github.event.number }} 
+    github-repository: ${{ github.repository }}
+    pr-number: ${{ github.event.number }} 
     location: "body"
     title: "[Rr]elease [Nn]otes:"
     skip-labels: "skip-release-notes,no-release-notes"
