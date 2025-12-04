@@ -69,7 +69,7 @@ This section can be placed anywhere in the pull request body. The action will se
 - **Default**: ``
 
 ### `skip-placeholders`
-- **Description**: Comma-separated placeholder tokens. If any token appears in the first release notes bullet, the check is skipped. Example: `TBD,ToDo`.
+- **Description**: Comma-separated placeholder tokens (e.g., `TBD`, `ToDo`) that will cause the check to fail if found at the beginning of first release notes bullet point. This ensures PR authors replace `pull_request_template.md` placeholders with actual release notes content.
 - **Required**: No
 - **Default**: ``
 
