@@ -69,7 +69,7 @@ This section can be placed anywhere in the pull request body. The action will se
 - **Default**: ``
 
 ### `skip-placeholders`
-- **Description**: Comma-separated placeholder tokens. If any token appears in the first release notes bullet, the check is skipped. Example: `TBD,ToDo`.
+- **Description**: Comma-separated placeholder tokens (e.g., `TBD`, `ToDo`). This option allows using a PR template with a predefined “Release Notes” heading without causing automatic passes. If any placeholder appears at the start of the first release-notes bullet, the check fails, ensuring authors replace template text with real notes.
 - **Required**: No
 - **Default**: ``
 
