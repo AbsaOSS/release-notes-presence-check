@@ -17,6 +17,7 @@
 """
 This module contains a method to set up logging in the project.
 """
+
 import logging
 import os
 import sys
